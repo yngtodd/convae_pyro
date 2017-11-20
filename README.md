@@ -1,3 +1,2 @@
-#### Convolutional Variational Autoencoder
-Learning through variational inference in Pyro
-____
+### Convolutional Variational Autoencoder
+Variational inference in Pyro
