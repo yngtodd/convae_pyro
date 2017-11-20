@@ -5,10 +5,8 @@ import visdom
 from torch.autograd import Variable
 
 import pyro
-import pyro.distributions as dist
 from pyro.infer import SVI
 from pyro.optim import Adam
-from pyro.util import ng_zeros, ng_ones
 
 import visdom
 from plots import plot_llk, mnist_test_tsne, plot_vae_samples
@@ -81,6 +79,7 @@ def main():
                 if args.cuda:
                     x = x.cuda()
                 # wrap the mini-batch in a PyTorch Variable
+                x.resize_(256, 1, 28, 28)
                 x = Variable(x)
                 # compute ELBO estimate and accumulate loss
                 test_loss += svi.evaluate_loss(x)

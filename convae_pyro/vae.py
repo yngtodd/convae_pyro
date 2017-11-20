@@ -3,14 +3,14 @@ import torch.nn as nn
 from torch.autograd import Variable
 
 import pyro
+import pyro.distributions as dist
+from pyro.util import ng_zeros, ng_ones
 
 from networks import Encoder, Decoder
 
 
 # define a PyTorch module for the VAE
 class VAE(nn.Module):
-    # by default our latent space is 50-dimensional
-    # and we use 400 hidden units
     def __init__(self, z_dim=50, hidden_dim=400, enc_kernel1=5, enc_kernel2=5, use_cuda=False):
         super(VAE, self).__init__()
         # create the encoder and decoder networks

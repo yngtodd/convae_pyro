@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 
 
+fudge = 1e-7
+
 # define the PyTorch module that parameterizes the
 # diagonal gaussian distribution q(z|x)
 class Encoder(nn.Module):
@@ -30,7 +32,8 @@ class Encoder(nn.Module):
         conv1 = self.conv1(x)
         conv2 = self.conv2(conv1)
         # then compute the hidden units
-        hidden = self.softplus(self.fc1(conv2))
+        conv2_reshaped = conv2.view(x.size(0), -1)
+        hidden = self.softplus(self.fc1(conv2_reshaped))
         # then return a mean vector and a (positive) square root covariance
         # each of size batch_size x z_dim
         z_mu = self.fc21(hidden)
