@@ -10,10 +10,13 @@ from pyro.infer import SVI
 from pyro.optim import Adam
 from pyro.util import ng_zeros, ng_ones
 
-from vae_plots import plot_llk, mnist_test_tsne, plot_vae_samples
+import visdom
+from plots import plot_llk, mnist_test_tsne, plot_vae_samples
 from mnist_cached import MNISTCached as MNIST
 from mnist_cached import setup_data_loaders
 
+from networks import Encoder, Decoder
+from vae import VAE
 
 
 def main():
@@ -29,7 +32,6 @@ def main():
     args = parser.parse_args()
 
     # setup MNIST data loaders
-    # train_loader, test_loader
     train_loader, test_loader = setup_data_loaders(MNIST, use_cuda=args.cuda, batch_size=256)
 
     # setup the VAE
@@ -59,6 +61,7 @@ def main():
             if args.cuda:
                 x = x.cuda()
             # wrap the mini-batch in a PyTorch Variable
+            x.resize_(256, 1, 28, 28)
             x = Variable(x)
             # do ELBO gradient and accumulate loss
             epoch_loss += svi.step(x)

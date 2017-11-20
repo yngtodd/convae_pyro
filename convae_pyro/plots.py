@@ -1,6 +1,14 @@
 import torch
 from torch.autograd import Variable
-# import numpy as np
+
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+from sklearn.manifold import TSNE
+
+import scipy as sp
+import seaborn as sns
+import pandas as pd
 
 
 def plot_conditional_samples_ssvae(ssvae, visdom_session):
@@ -74,11 +82,7 @@ def mnist_test_tsne_ssvae(name=None, ssvae=None, test_loader=None):
 
 
 def plot_tsne(z_mu, classes, name):
-    import numpy as np
-    import matplotlib
     matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    from sklearn.manifold import TSNE
     model_tsne = TSNE(n_components=2, random_state=0)
     z_states = z_mu.data.cpu().numpy()
     z_embed = model_tsne.fit_transform(z_states)
