@@ -1,4 +1,4 @@
-### Convolutional Variational Autoencoder
+## Convolutional Variational Autoencoder
 Variational inference in Pyro
 
 <p align="center">
