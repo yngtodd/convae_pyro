@@ -1,7 +1,6 @@
 import argparse
 import numpy as np
 import torch
-import visdom
 from torch.autograd import Variable
 
 import pyro
