@@ -64,6 +64,7 @@ def mnist_test_tsne(vae=None, test_loader=None):
     """
     name = 'VAE'
     data = Variable(test_loader.dataset.test_data.float())
+    data = data.resize_(1, 1, 28, 28)
     mnist_labels = Variable(test_loader.dataset.test_labels)
     z_mu, z_sigma = vae.encoder(data)
     plot_tsne(z_mu, mnist_labels, name)
@@ -76,6 +77,7 @@ def mnist_test_tsne_ssvae(name=None, ssvae=None, test_loader=None):
     if name is None:
         name = 'SS-VAE'
     data = Variable(test_loader.dataset.test_data.float())
+    data = data.resize_(1, 1, 28, 28)
     mnist_labels = Variable(test_loader.dataset.test_labels)
     z_mu, z_sigma = ssvae.encoder_z([data, mnist_labels])
     plot_tsne(z_mu, mnist_labels, name)

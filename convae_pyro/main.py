@@ -22,6 +22,7 @@ def main():
     parser = argparse.ArgumentParser(description="parse args")
     parser.add_argument('-n', '--num-epochs', default=101, type=int, help='number of training epochs')
     parser.add_argument('-tf', '--test-frequency', default=5, type=int, help='how often we evaluate the test set')
+    parser.add_argument('-b', '--batch_size', default=256, type=int, help='batch size for training')
     parser.add_argument('-lr', '--learning-rate', default=1.0e-3, type=float, help='learning rate')
     parser.add_argument('-b1', '--beta1', default=0.95, type=float, help='beta1 adam hyperparameter')
     parser.add_argument('--cuda', action='store_true', default=False, help='whether to use cuda')
@@ -30,7 +31,7 @@ def main():
     args = parser.parse_args()
 
     # setup MNIST data loaders
-    train_loader, test_loader = setup_data_loaders(MNIST, use_cuda=args.cuda, batch_size=256)
+    train_loader, test_loader = setup_data_loaders(MNIST, use_cuda=args.cuda, batch_size=args.batch_size)
 
     # setup the VAE
     vae = VAE(use_cuda=args.cuda)
@@ -59,7 +60,7 @@ def main():
             if args.cuda:
                 x = x.cuda()
             # wrap the mini-batch in a PyTorch Variable
-            x.resize_(256, 1, 28, 28)
+            x.resize_(args.batch_size, 1, 28, 28)
             x = Variable(x)
             # do ELBO gradient and accumulate loss
             epoch_loss += svi.step(x)
@@ -79,7 +80,7 @@ def main():
                 if args.cuda:
                     x = x.cuda()
                 # wrap the mini-batch in a PyTorch Variable
-                x.resize_(256, 1, 28, 28)
+                x.resize_(args.batch_size, 1, 28, 28)
                 x = Variable(x)
                 # compute ELBO estimate and accumulate loss
                 test_loss += svi.evaluate_loss(x)
@@ -91,9 +92,11 @@ def main():
                         plot_vae_samples(vae, vis)
                         reco_indices = np.random.randint(0, x.size(0), 3)
                         for index in reco_indices:
+                            #print(x)
                             test_img = x[index, :]
+                            #print(test_img)
                             reco_img = vae.reconstruct_img(test_img)
-                            vis.image(test_img.contiguous().view(28, 28).data.cpu().numpy(),
+                            vis.image(test_img.contiguous().view(28, 28).data.cpu().numpy(), #.view(28, 28).data.cpu().numpy()
                                       opts={'caption': 'test image'})
                             vis.image(reco_img.contiguous().view(28, 28).data.cpu().numpy(),
                                       opts={'caption': 'reconstructed image'})

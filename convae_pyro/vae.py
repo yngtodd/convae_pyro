@@ -51,6 +51,7 @@ class VAE(nn.Module):
     # define a helper function for reconstructing images
     def reconstruct_img(self, x):
         # encode image x
+        x = x.view(1, 1, 28, 28)
         z_mu, z_sigma = self.encoder(x)
         # sample in latent space
         z = dist.normal(z_mu, z_sigma)
