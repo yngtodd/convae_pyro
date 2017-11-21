@@ -2,12 +2,7 @@ import torch
 from torch.autograd import Variable
 
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-from sklearn.manifold import TSNE
-
 import scipy as sp
-import seaborn as sns
 import pandas as pd
 
 
@@ -64,6 +59,7 @@ def mnist_test_tsne(vae=None, test_loader=None):
     """
     name = 'VAE'
     data = Variable(test_loader.dataset.test_data.float())
+    data = data.view(-1, 1, 28, 28)
     mnist_labels = Variable(test_loader.dataset.test_labels)
     z_mu, z_sigma = vae.encoder(data)
     plot_tsne(z_mu, mnist_labels, name)
@@ -82,7 +78,11 @@ def mnist_test_tsne_ssvae(name=None, ssvae=None, test_loader=None):
 
 
 def plot_tsne(z_mu, classes, name):
+    import numpy as np
+    import matplotlib
     matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from sklearn.manifold import TSNE
     model_tsne = TSNE(n_components=2, random_state=0)
     z_states = z_mu.data.cpu().numpy()
     z_embed = model_tsne.fit_transform(z_states)
